@@ -134,3 +134,32 @@ def dijkstra(grid, start_pos, target_pos, directions, obstacles=[]):
                         came_from[neighbour_pos] = current_pos 
                         heapq.heappush(open_set, (new_cost, neighbour_pos))
     return None
+
+def convert_to_adjacency_matrix(map):
+    conn_graph = {}
+    for start_node, end_node in map:
+        if start_node in conn_graph:
+            conn_graph[start_node].append(end_node)
+        else:
+            conn_graph[start_node] = [end_node]
+        if end_node in conn_graph:
+            conn_graph[end_node].append(start_node)
+        else:
+            conn_graph[end_node] = [start_node]
+    return conn_graph
+
+def dfs_get_all_paths(conn_graph):
+
+    all_visited = []
+
+    def dfs(conn_graph, current_node, visited):
+        visited.append(current_node)
+        small_cave_dic = {"a":0, "b":0, "c":0}
+        for node in conn_graph[current_node]:
+            if node not in visited or node[0].isupper():
+                dfs(conn_graph, node, visited.copy())
+        all_visited.append(visited)
+
+    dfs(conn_graph, "start", [])
+
+    return all_visited
